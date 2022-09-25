@@ -1,0 +1,5 @@
+testdata/*.json
+/testdata/*.zip
+/extracted_resources/*.json
+test.py
+specification-extraction.txt
