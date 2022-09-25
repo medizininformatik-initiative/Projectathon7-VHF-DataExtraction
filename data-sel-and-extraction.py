@@ -43,12 +43,35 @@ proxies_fhir = {
 def execute_query(query, post_query=False):
 
     query_url = f'{fhir_base_url}{query}'
+
     if fhir_token is not None:
-        resp = requests.get(query_url, headers={'Authorization': f"Bearer {fhir_token}"},
-                            proxies=proxies_fhir)
+
+        if post_query is True:
+            parsed_url = urlparse(query_url)
+            params = parse_qs(parsed_url.query)
+            payload = {}
+            for param in params:
+                payload[param] = params[param]
+            search_url = f'{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/_search'
+            resp = requests.post(search_url, headers={'Authorization': f"Bearer {fhir_token}"},
+                                 data=payload, proxies=proxies_fhir)
+        else:
+            resp = requests.get(query_url, headers={'Authorization': f"Bearer {fhir_token}"},
+                                proxies=proxies_fhir)
     else:
-        resp = requests.get(query_url, auth=HTTPBasicAuth(
-            fhir_user, fhir_pw), proxies=proxies_fhir)
+        if post_query is True:
+            parsed_url = urlparse(query_url)
+            params = parse_qs(parsed_url.query)
+            payload = {}
+            for param in params:
+                payload[param] = params[param]
+
+            search_url = f'{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/_search'
+            resp = requests.post(search_url, auth=HTTPBasicAuth(
+                fhir_user, fhir_pw), data=payload, proxies=proxies_fhir)
+        else:
+            resp = requests.get(query_url, auth=HTTPBasicAuth(
+                fhir_user, fhir_pw), proxies=proxies_fhir)
 
     resp_object = {}
     resp_object['status'] = "success"
@@ -115,6 +138,14 @@ def extract_ids_from_resources(resource_list, extraction_path, id_prefix):
     return id_list
 
 
+def obfuscate_date_to_year(field_input):
+    return field_input[0:4]
+
+
+def obfuscate_date_to_day(field_input):
+    return field_input[0:10]
+
+
 def remove_from_object_by_expression(to_remove, resource):
     jsonpath_expression = parse(to_remove)
 
@@ -135,6 +166,7 @@ def remove_from_object_by_expression(to_remove, resource):
             resource = resource[cur_key]
 
         del resource[path[len(path)-1]]
+
 
 def change_id_in_obj_by_expression(id_change, resource):
 
@@ -160,7 +192,7 @@ def change_id_in_obj_by_expression(id_change, resource):
             resource = resource[cur_key]
 
         cur_id = resource[path[len(path) - 1]]
-        
+
         if id_prefix is not None:
             cur_id = cur_id.replace(id_prefix, "")
 
@@ -176,16 +208,46 @@ def change_id_in_obj_by_expression(id_change, resource):
             resource[path[len(path) - 1]] = psd_id
 
 
+def apply_function_to_field_by_expression(to_apply, resource):
+
+    jsonpath_expression = parse(to_apply['path_to_field'])
+    found = jsonpath_expression.find(resource)
+    for match in found:
+        path = [str(match.path)]
+        match = match.context
+
+        while match.context is not None:
+            path = [str(match.path)] + path
+            match = match.context
+
+        for index in range(0, len(path) - 1):
+            cur_key = path[index]
+            if "[" in cur_key:
+                cur_key = re.sub(r"[\[\]]", "", cur_key)
+                cur_key = int(cur_key)
+            resource = resource[cur_key]
+
+        cur_field = resource[path[len(path) - 1]]
+
+        resource[path[len(path) - 1]
+                 ] = globals()[to_apply['function_to_apply']](cur_field)
+
+
 def pseudonomise_resource(resource, psd_config):
 
     for id_change in psd_config['change_id']:
         # print(f'Changing ids for expression: {id_change["path_to_id"]}')
         change_id_in_obj_by_expression(id_change, resource)
-      
+
     for to_remove in psd_config['remove']:
         remove_from_object_by_expression(to_remove, resource)
 
+    if 'apply_function' in psd_config:
+        for to_apply in psd_config['apply_function']:
+            apply_function_to_field_by_expression(to_apply, resource)
+
     return resource
+
 
 def pseudonomise_resources(resource_list, psd_config):
     psd_resources = []
@@ -195,6 +257,12 @@ def pseudonomise_resources(resource_list, psd_config):
 
     return psd_resources
 
+def chunks(lst, n):
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
+
+chunk_size = 100
 
 # Get all  NTproBNP Observations between 01.01.2019 und 31.12.2021
 query = "/Observation?code=http://loinc.org%7C33763-4,http://loinc.org%7C71425-3,http://loinc.org%7C33762-6,http://loinc.org%7C83107-3,http://loinc.org%7C83108-1,http://loinc.org%7C77622-9,http://loinc.org%7C77621-1&date=ge2019-01-01&date=le2021-12-31&_format=json"
@@ -202,22 +270,31 @@ obs_list = get_all_res_for_query(query)
 
 # get Pats and Cohort Pat Ids
 pat_ids = extract_ids_from_resources(obs_list, "subject.reference", "Patient/")
-query = f'/Patient?id={",".join(pat_ids)}'
-pat_list = get_all_res_for_query(query, True)
+pat_list = []
+for chunk in chunks(pat_ids, chunk_size):
+    query = f'/Patient?_id={",".join(chunk)}'
+    pat_list = pat_list + get_all_res_for_query(query, False)
 
 # Get Encs for cohort of type Einrichtungskontakt
-query = f'/Encounter?subject={",".join(pat_ids)}&type=einrichtungskontakt'
-enc_list = get_all_res_for_query(query, True)
+
+enc_list = []
+for chunk in chunks(pat_ids, chunk_size):
+    query = f'/Encounter?subject={",".join(chunk)}&type=einrichtungskontakt'
+    enc_list = enc_list + get_all_res_for_query(query, False)
+
 
 # Get Conds for cohort
-query = f'/Condition?subject={",".join(pat_ids)}'
-cond_list = get_all_res_for_query(query, True)
+cond_list = []
+for chunk in chunks(pat_ids, chunk_size):
+    query = f'/Condition?subject={",".join(chunk)}'
+    cond_list = get_all_res_for_query(query, False)
 
 
 obs_id_pseudonyms = {}
 pat_id_pseudonyms = {}
 enc_id_pseudonyms = {}
 cond_id_pseudonyms = {}
+
 
 # Pseudonymise obs
 psd_config = {
@@ -245,7 +322,6 @@ psd_config = {
 }
 
 print("Begin pseudonomysation of Observations...")
-#obs_list = obs_list[0:0]
 with open('extracted_resources/obs.json', 'w') as f:
     json.dump(obs_list, f)
 psd_obs = pseudonomise_resources(obs_list, psd_config)
@@ -266,11 +342,16 @@ psd_config = {
             "id_pool": pat_id_pseudonyms,
             "path_to_id": "$.identifier[?system = 'https://VHF.de/pid'].value"
         }
+    ],
+    "apply_function": [
+        {
+            "function_to_apply": "obfuscate_date_to_year",
+            "path_to_field": "birthDate"
+        }
     ]
 }
 
 print("Begin pseudonomysation of Patients...")
-#pat_list = pat_list[0:0]
 with open('extracted_resources/pats.json', 'w') as f:
     json.dump(pat_list, f)
 psd_pats = pseudonomise_resources(pat_list, psd_config)
@@ -301,11 +382,20 @@ psd_config = {
             "id_pool": enc_id_pseudonyms,
             "path_to_id": "$.identifier[*].value"
         }
+    ],
+    "apply_function": [
+        {
+            "function_to_apply": "obfuscate_date_to_day",
+            "path_to_field": "period.start"
+        },
+        {
+            "function_to_apply": "obfuscate_date_to_day",
+            "path_to_field": "period.end"
+        }
     ]
 }
 
 print("Begin pseudonomysation of Encounters...")
-# enc_list = enc_list[0:0]
 with open('extracted_resources/enc.json', 'w') as f:
     json.dump(enc_list, f)
 psd_pats = pseudonomise_resources(enc_list, psd_config)
@@ -335,11 +425,13 @@ psd_config = {
 }
 
 print("Begin pseudonomysation of Conditions...")
-# cond_list = cond_list[0:4]
+
 with open('extracted_resources/cond.json', 'w') as f:
     json.dump(cond_list, f)
 psd_pats = pseudonomise_resources(cond_list, psd_config)
 print("End pseudonomysation...")
+
+
 with open('extracted_resources/psd-conds.json', 'w') as f:
     json.dump(cond_list, f)
 
@@ -354,4 +446,3 @@ with open('extracted_resources/psd-enc-ids.json', 'w') as f:
 
 with open('extracted_resources/psd-cond-ids.json', 'w') as f:
     json.dump(cond_id_pseudonyms, f)
-

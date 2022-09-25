@@ -1,21 +1,33 @@
 import json
+import base64
 
-obs_id_pseudonyms = {}
-pat_id_pseudonyms = {}
-enc_id_pseudonyms = {}
-cond_id_pseudonyms = {}
+bundle = {
+    "resourceType": "Bundle",
+    "type": "transaction",
+    "entry": []
+}
 
+extracted_res_bundles = ['psd-pats', 'psd-encs', 'psd-obs', 'psd-conds']
 
-with open('extracted_resources/psd-obs-ids.json', 'r') as f:
-    obs_id_pseudonyms = json.load(f)
+for res_name in extracted_res_bundles:
+    with open(f'extracted_resources/{res_name}.json', 'r') as f:
+        cur_resources = json.load(f)
 
-with open('extracted_resources/psd-pat-ids.json', 'r') as f:
-    pat_id_pseudonyms = json.load(f)
+    for resource in cur_resources:
+        entry = {
+            "fullUrl": f'{resource["resourceType"]}/{resource["id"]}',
+            "resource": resource,
+            "request": {
+                "method": "PUT",
+                "url": f'{resource["resourceType"]}/{resource["id"]}'
+            }
+        }
+        bundle['entry'].append(entry)
 
-with open('extracted_resources/psd-enc-ids.json', 'r') as f:
-    enc_id_pseudonyms = json.load(f)
+with open("extracted_resources/bundle-to-send.json", 'w') as f:
+    json.dump(bundle, f)
 
-with open('extracted_resources/psd-cond-ids.json', 'r') as f:
-    cond_id_pseudonyms = json.load(f)
-
-
+datastr = json.dumps(bundle)
+b64_encoded_bundle = base64.b64encode(datastr.encode('utf-8'))
+with open("extracted_resources/b64-encoded-bundle-to-send", 'w') as f:
+    f.write(str(b64_encoded_bundle, "utf-8"))
