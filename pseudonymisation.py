@@ -150,10 +150,9 @@ for psd_config in psd_configs:
     with open(input_file, 'r') as f:
         input_list = json.load(f)
 
-    input_list = input_list[0:2]
     print(f'Begin pseudonymisation of: {input_file}...')
     psd_list = pseudonomise_resources(input_list, psd_config)
-    print(f'Finished pseudonymisation of: {input_list}')
+    print(f'Finished pseudonymisation of: {input_file}')
     output_file = f'{psd_config["psd_file_path"]}/{psd_config["psd_name"]}_{psd_time}.json'
     with open(output_file, 'w') as f:
         json.dump(psd_list, f)

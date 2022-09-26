@@ -5,6 +5,7 @@ from json.decoder import JSONDecodeError
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 from jsonpath_ng.ext import parse
+import json
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--fhirurl', help='base url of your local fhir server',
@@ -137,28 +138,41 @@ def chunks(lst, n):
         yield lst[i:i + n]
 
 
-chunk_size = 100
+with open("data_extraction_config.json", "r") as f:
+    data_extraction_config = json.load(f)
 
-# Get all  NTproBNP Observations between 01.01.2019 und 31.12.2021
-query = "/Observation?code=http://loinc.org%7C33763-4,http://loinc.org%7C71425-3,http://loinc.org%7C33762-6,http://loinc.org%7C83107-3,http://loinc.org%7C83108-1,http://loinc.org%7C77622-9,http://loinc.org%7C77621-1&date=ge2019-01-01&date=le2021-12-31&_format=json"
-obs_list = get_all_res_for_query(query)
+extracted_resources = {}
+cohort_ids = []
 
-# get Pats and Cohort Pat Ids
-pat_ids = extract_ids_from_resources(obs_list, "subject.reference", "Patient/")
-pat_list = []
-for chunk in chunks(pat_ids, chunk_size):
-    query = f'/Patient?_id={",".join(chunk)}'
-    pat_list = pat_list + get_all_res_for_query(query, False)
+for extraction in data_extraction_config:
+    extraction_name = extraction['name']
+    output_file_path = extraction['output_file_path']
+    query = extraction['query']
+    extracted_res_list = []
 
-# Get Encs for cohort of type Einrichtungskontakt
-enc_list = []
-for chunk in chunks(pat_ids, chunk_size):
-    query = f'/Encounter?subject={",".join(chunk)}&type=einrichtungskontakt'
-    enc_list = enc_list + get_all_res_for_query(query, False)
+    if "cohort_dependence" in extraction:
+        cohort_id_field = extraction['cohort_dependence']['cohort_id_selection_field']
+        append_prefix = "&"
+        if "?" not in query:
+            append_prefix = "?"
 
+        chunk_size = extraction['cohort_dependence']['chunk_size']
 
-# Get Conds for cohort
-cond_list = []
-for chunk in chunks(pat_ids, chunk_size):
-    query = f'/Condition?subject={",".join(chunk)}'
-    cond_list = get_all_res_for_query(query, False)
+        for chunk in chunks(cohort_ids, chunk_size):
+            temp_query = f'{query}{append_prefix}{cohort_id_field}={",".join(chunk)}'
+            extracted_res_list = extracted_res_list + get_all_res_for_query(temp_query, False)
+
+    else:
+        extracted_res_list = get_all_res_for_query(query)
+
+    print(f'Extracted {len(extracted_res_list)} for extraction with name {extraction_name}')
+    extracted_resources[extraction_name] = extracted_res_list
+
+    if "cohort_extraction" in extraction:
+        cohort_id_field = extraction['cohort_extraction']['cohort_id_field']
+        cohort_id_prefix = extraction['cohort_extraction']['cohort_id_prefix']
+        part_cohort_ids = extract_ids_from_resources(extracted_res_list, cohort_id_field, cohort_id_prefix)
+        cohort_ids = cohort_ids + part_cohort_ids
+
+    with open(f'{output_file_path}/{extraction_name}.json', 'w') as f:
+        json.dump(extracted_resources[extraction_name], f)

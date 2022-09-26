@@ -8,3 +8,4 @@ testdata/*.json
 test.py
 specification-extraction.txt
 psd_config.json
+data_extraction_config.json

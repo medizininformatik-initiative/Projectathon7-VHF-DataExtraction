@@ -20,7 +20,12 @@ parser.add_argument('--httpsproxyfhir',
                     help='https proxy url for your fhir server - None if not set here', nargs="?", default=None)
 parser.add_argument(
     '--storebundle', help='boolean whether to store the bundle in the local fhir server', nargs="?", default=False)
-
+parser.add_argument(
+    '--orgident', help='identifier of your organisation', nargs="?", default="my-org-ident")
+parser.add_argument(
+    '--psddatetime', help='time of pseudonmised resources to use format: 2022-09-26_10-03-40', nargs="?", default="2022-09-26_10-03-40")
+parser.add_argument(
+    '--psdnames', help='comma separated list of extraction names - see psd_name of psd_config.json', nargs="?", default="pats,enc,obs,cond")
 
 args = vars(parser.parse_args())
 
@@ -31,6 +36,9 @@ fhir_token = args["fhirtoken"]
 http_proxy_fhir = args["httpproxyfhir"]
 https_proxy_fhir = args["httpsproxyfhir"]
 send_transaction_bundle = args["storebundle"]
+org_ident = args["orgident"]
+psd_date_time = args["psddatetime"]
+psd_names = args["psdnames"]
 
 proxies_fhir = {
     "http": http_proxy_fhir,
@@ -43,9 +51,7 @@ bundle = {
     "entry": []
 }
 
-psd_date_time = "2022-09-26_10-03-40"
-psd_names = ['pats', 'enc', 'obs', 'cond']
-
+psd_names = psd_names.split(",")
 
 for res_name in psd_names:
     with open(f'pseudonymised_resources/{res_name}_{psd_date_time}.json', 'r') as f:
@@ -71,7 +77,6 @@ with open(f'to_send/b64-encoded-bundle-to-send__{psd_date_time}', 'w') as f:
     f.write(str(b64_encoded_bundle, "utf-8"))
 
 
-my_org_ident = "http://test.ukjug.de"
 id_doc_ref = str(uuid.uuid4())
 id_att = str(uuid.uuid4())
 
@@ -93,7 +98,7 @@ send_bundle = {
                 "type": "Organization",
                 "identifier": {
                     "system": "http://highmed.org/sid/organization-identifier",
-                    "value": my_org_ident
+                    "value": org_ident
                 }
             },
              "date": "2022-09-26T12:15:23.282+00:00",
@@ -131,7 +136,7 @@ with open(f'to_send/fhir-store-bundle__{psd_date_time}.json', 'w') as f:
 if send_transaction_bundle:
     if fhir_token is not None:
         resp = requests.post(fhir_base_url, headers={'Authorization': f"Bearer {fhir_token}"},
-                            json=send_bundle, proxies=proxies_fhir)
+                             json=send_bundle, proxies=proxies_fhir)
     else:
         resp = requests.post(fhir_base_url, auth=HTTPBasicAuth(
             fhir_user, fhir_pw), json=send_bundle, proxies=proxies_fhir)
