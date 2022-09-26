@@ -2,5 +2,9 @@ testdata/*.json
 /testdata/*.zip
 /extracted_resources/*.json
 /extracted_resources/b64*
+/pseudonymised_resources/*.json
+/to_send/b64*
+/to_send/*.json
 test.py
 specification-extraction.txt
+psd_config.json
