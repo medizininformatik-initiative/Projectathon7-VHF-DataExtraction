@@ -6,12 +6,11 @@ import uuid
 import re
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--fhirurl', help='base url of your local fhir server',
-                    default="http://localhost:8081/fhir")
+parser.add_argument(
+    '--psddatetime', help='time of pseudonmised resources to use format: 2022-09-26_10-03-40', nargs="?", default=datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
 args = vars(parser.parse_args())
-
-fhir_base_url = args["fhirurl"]
+psd_date_time = args["psddatetime"]
 
 
 def obfuscate_date_to_year(field_input):
@@ -139,8 +138,6 @@ def pseudonomise_resources(resource_list, psd_config):
 
 id_pseudonyms = {}
 
-psd_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
 with open("psd_config.json", 'r') as f:
     psd_configs = json.load(f)
 
@@ -153,10 +150,10 @@ for psd_config in psd_configs:
     print(f'Begin pseudonymisation of: {input_file}...')
     psd_list = pseudonomise_resources(input_list, psd_config)
     print(f'Finished pseudonymisation of: {input_file}')
-    output_file = f'{psd_config["psd_file_path"]}/{psd_config["psd_name"]}_{psd_time}.json'
+    output_file = f'{psd_config["psd_file_path"]}/{psd_config["psd_name"]}_{psd_date_time}.json'
     with open(output_file, 'w') as f:
         json.dump(psd_list, f)
 
-id_psd_file = f'{psd_config["psd_file_path"]}/id_pseudonyms_{psd_time}_.json'
+id_psd_file = f'{psd_config["psd_file_path"]}/id_pseudonyms_{psd_date_time}_.json'
 with open(id_psd_file, 'w') as f:
     json.dump(id_pseudonyms, f)

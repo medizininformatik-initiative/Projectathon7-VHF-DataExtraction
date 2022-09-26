@@ -1,0 +1,19 @@
+services:
+    mii-data-extraction:
+        build: .
+        environment:
+            - FHIR_BASE_URL=${MII_DATA_EXTRACTION_FHIR_BASE_URL}
+            - FHIR_USER=${MII_DATA_EXTRACTION_FHIR_USER}
+            - FHIR_PW=${MII_DATA_EXTRACTION_FHIR_PW}
+            - FHIR_PROXY_HTTP=${MII_DATA_EXTRACTION_FHIR_PROXY_HTTP}
+            - FHIR_PROXY_HTTPS=${MII_DATA_EXTRACTION_FHIR_PROXY_HTTPS}
+            - FHIR_TOKEN=${MII_DATA_EXTRACTION_FHIR_TOKEN}
+            - SEND_REPORT=${MII_DATA_EXTRACTION_SEND_REPORT}
+            - ORG_IDENT=${MII_DATA_EXTRACTION_ORG_IDENT:-my-org-ident}
+            - PSD_NAMES=${MII_DATA_EXTRACTION_PSD_NAMES:-pats,enc,obs,cond}
+        volumes:
+            - ./data_extraction_config.json:/opt/data-extraction/data_extraction_config.json
+            - ./psd_config.json:/opt/data-extraction/psd_config.json
+            - ./extracted_resources:/opt/data-extraction/extracted_resources
+            - ./pseudonymised_resources:/opt/data-extraction/pseudonymised_resources
+            - ./to_send:/opt/data-extraction/to_send

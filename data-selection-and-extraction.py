@@ -165,7 +165,7 @@ for extraction in data_extraction_config:
     else:
         extracted_res_list = get_all_res_for_query(query)
 
-    print(f'Extracted {len(extracted_res_list)} for extraction with name {extraction_name}')
+    print(f'Extracted {len(extracted_res_list)} resources for extraction with name {extraction_name}')
     extracted_resources[extraction_name] = extracted_res_list
 
     if "cohort_extraction" in extraction:
