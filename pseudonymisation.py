@@ -111,20 +111,73 @@ def apply_function_to_field_by_expression(to_apply, resource):
         resource[path[len(path) - 1]
                  ] = globals()[to_apply['function_to_apply']](cur_field)
 
+def key_is_array_index(key):
+    key = str(key)
+    if "[" in key:
+        return True
+
+    return False
+
+def select_in_obj_by_expression(selection, psd_resource, resource):
+
+    jsonpath_expression = parse(selection)
+    found = jsonpath_expression.find(resource)
+    for match in found:
+        path = [str(match.path)]
+        match = match.context
+
+        while match.context is not None:
+            path = [str(match.path)] + path
+            match = match.context
+
+        for index in range(0, len(path)):
+            cur_key = path[index]
+            cur_is_array_key = key_is_array_index(cur_key)
+            if cur_is_array_key:
+                cur_key = re.sub(r"[\[\]]", "", cur_key)
+                cur_key = int(cur_key)
+
+            if index == len(path) - 1:
+
+                if cur_is_array_key:
+                    psd_resource.append(resource[cur_key])
+                else:
+                    psd_resource[cur_key] = resource[cur_key]
+                continue
+
+            next_key = path[index + 1]
+            if cur_key not in psd_resource:
+                if key_is_array_index(next_key):
+                    psd_resource[cur_key] = []
+                elif cur_is_array_key:
+                    psd_resource.append({})
+                else:
+                    psd_resource[cur_key] = {}
+
+            psd_resource = psd_resource[cur_key]
+            resource = resource[cur_key]
+
 
 def pseudonomise_resource(resource, psd_config):
 
-    for id_change in psd_config['change_id']:
-        change_id_in_obj_by_expression(id_change, resource)
+    psd_resource = {}
 
-    for to_remove in psd_config['remove']:
-        remove_from_object_by_expression(to_remove, resource)
+    for selection in psd_config['select']:
+        select_in_obj_by_expression(selection, psd_resource, resource)
+
+    for id_change in psd_config['change_id']:
+        change_id_in_obj_by_expression(id_change, psd_resource)
+
+    if 'remove' in psd_config:
+        for to_remove in psd_config['remove']:
+            remove_from_object_by_expression(to_remove, psd_resource)
 
     if 'apply_function' in psd_config:
         for to_apply in psd_config['apply_function']:
-            apply_function_to_field_by_expression(to_apply, resource)
+            apply_function_to_field_by_expression(to_apply, psd_resource)
 
-    return resource
+    print(psd_resource)
+    return psd_resource
 
 
 def pseudonomise_resources(resource_list, psd_config):
