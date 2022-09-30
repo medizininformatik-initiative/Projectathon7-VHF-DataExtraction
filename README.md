@@ -27,7 +27,7 @@ Once the script is finished access <http://localhost:8081/fhir/Patient> again to
 
 ### Step 3 - Create local version of config files
 
-Create your own config files using the ``
+Create your own config files using the `initialise-env-files.sh`
 
 ### Step 4 - Run the data extraction, pseudonymisation and bundleing
 
