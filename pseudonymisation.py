@@ -176,7 +176,6 @@ def pseudonomise_resource(resource, psd_config):
         for to_apply in psd_config['apply_function']:
             apply_function_to_field_by_expression(to_apply, psd_resource)
 
-    print(psd_resource)
     return psd_resource
 
 

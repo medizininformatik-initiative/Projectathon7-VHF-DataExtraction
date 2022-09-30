@@ -2,7 +2,7 @@
   "psd_name": "obs",
   "input_file_path": "extracted_resources",
   "psd_file_path": "pseudonymised_resources",
-  "select": [ "id", "code", "valueCodeableConcept", "valueQuantity","subject.reference", "effectiveDateTime", 
+  "select": [ "id", "resourceType", "code", "valueCodeableConcept", "valueQuantity","subject.reference", "effectiveDateTime", 
               "encounter.reference"],
   "change_id": [
       {
@@ -25,7 +25,7 @@
   "psd_name": "pats",
   "input_file_path": "extracted_resources",
   "psd_file_path": "pseudonymised_resources",
-  "select": ["id", "birthDate", "gender"],
+  "select": ["id", "resourceType", "birthDate", "gender"],
   "change_id": [
       {
           "id_pool": "pat_id_pseudonyms",
@@ -43,7 +43,7 @@
   "psd_name": "enc",
   "input_file_path": "extracted_resources",
   "psd_file_path": "pseudonymised_resources",
-  "select": ["id","diagnosis.use", "serviceType", "diagnosis[*].condition.reference", "subject.reference", "period"],
+  "select": ["id", "resourceType", "diagnosis.use", "serviceType", "diagnosis[*].condition.reference", "subject.reference", "period"],
   "change_id": [
       {
           "id_pool": "enc_id_pseudonyms",
@@ -75,7 +75,7 @@
   "psd_name": "cond",
   "input_file_path": "extracted_resources",
   "psd_file_path": "pseudonymised_resources",
-  "select": ["id", "clinicalStatus", "verificationStatus", "code", "encounter.reference", "subject.reference"],
+  "select": ["id", "resourceType", "clinicalStatus", "verificationStatus", "code", "encounter.reference", "subject.reference"],
   "change_id": [
       {
           "id_pool": "cond_id_pseudonyms",
