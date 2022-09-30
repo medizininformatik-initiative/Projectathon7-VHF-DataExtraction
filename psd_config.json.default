@@ -2,7 +2,8 @@
   "psd_name": "obs",
   "input_file_path": "extracted_resources",
   "psd_file_path": "pseudonymised_resources",
-  "remove": ["meta"],
+  "select": [ "id", "code", "valueCodeableConcept", "valueQuantity","subject.reference", "effectiveDateTime", 
+              "encounter.reference"],
   "change_id": [
       {
           "id_pool": "obs_id_pseudonyms",
@@ -17,10 +18,6 @@
           "id_pool": "enc_id_pseudonyms",
           "id_prefix": "Encounter/",
           "path_to_id": "encounter.reference"
-      },
-      {
-          "id_pool": "obs_id_pseudonyms",
-          "path_to_id": "$.identifier[?system = 'https://VHF.de/befund'].value"
       }
   ]
 },
@@ -28,15 +25,11 @@
   "psd_name": "pats",
   "input_file_path": "extracted_resources",
   "psd_file_path": "pseudonymised_resources",
-  "remove": ["name", "address"],
+  "select": ["id", "birthDate", "gender"],
   "change_id": [
       {
           "id_pool": "pat_id_pseudonyms",
           "path_to_id": "id"
-      },
-      {
-          "id_pool": "pat_id_pseudonyms",
-          "path_to_id": "$.identifier[?system = 'https://VHF.de/pid'].value"
       }
   ],
   "apply_function": [
@@ -50,7 +43,7 @@
   "psd_name": "enc",
   "input_file_path": "extracted_resources",
   "psd_file_path": "pseudonymised_resources",
-  "remove": ["meta"],
+  "select": ["id","diagnosis.use", "serviceType", "diagnosis[*].condition.reference", "subject.reference", "period"],
   "change_id": [
       {
           "id_pool": "enc_id_pseudonyms",
@@ -65,10 +58,6 @@
           "id_pool": "pat_id_pseudonyms",
           "id_prefix": "Patient/",
           "path_to_id": "subject.reference"
-      },
-      {
-          "id_pool": "enc_id_pseudonyms",
-          "path_to_id": "$.identifier[*].value"
       }
   ],
   "apply_function": [
@@ -86,7 +75,7 @@
   "psd_name": "cond",
   "input_file_path": "extracted_resources",
   "psd_file_path": "pseudonymised_resources",
-  "remove": ["meta"],
+  "select": ["id", "clinicalStatus", "verificationStatus", "code", "encounter.reference", "subject.reference"],
   "change_id": [
       {
           "id_pool": "cond_id_pseudonyms",
@@ -96,10 +85,6 @@
           "id_pool": "pat_id_pseudonyms",
           "id_prefix": "Patient/",
           "path_to_id": "subject.reference"
-      },
-      {
-          "id_pool": "cond_id_pseudonyms",
-          "path_to_id": "$.identifier[*].value"
       }
   ]
 }
