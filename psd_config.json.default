@@ -1,91 +1,121 @@
-[{
-  "psd_name": "obs",
-  "input_file_path": "extracted_resources",
-  "psd_file_path": "pseudonymised_resources",
-  "select": [ "id", "resourceType", "code", "valueCodeableConcept", "valueQuantity","subject.reference", "effectiveDateTime", 
-              "encounter.reference"],
-  "change_id": [
+[
+  {
+    "psd_name": "obs",
+    "input_file_path": "extracted_resources",
+    "psd_file_path": "pseudonymised_resources",
+    "select": [
+      "id",
+      "resourceType",
+      "code",
+      "valueCodeableConcept",
+      "valueQuantity",
+      "subject.reference",
+      "effectiveDateTime",
+      "encounter.reference"
+    ],
+    "change_id": [
       {
-          "id_pool": "obs_id_pseudonyms",
-          "path_to_id": "id"
+        "id_pool": "obs_id_pseudonyms",
+        "path_to_id": "id"
       },
       {
-          "id_pool": "pat_id_pseudonyms",
-          "id_prefix": "Patient/",
-          "path_to_id": "subject.reference"
+        "id_pool": "pat_id_pseudonyms",
+        "id_prefix": "Patient/",
+        "path_to_id": "subject.reference"
       },
       {
-          "id_pool": "enc_id_pseudonyms",
-          "id_prefix": "Encounter/",
-          "path_to_id": "encounter.reference"
+        "id_pool": "enc_id_pseudonyms",
+        "id_prefix": "Encounter/",
+        "path_to_id": "encounter.reference"
       }
-  ]
-},
-{
-  "psd_name": "pats",
-  "input_file_path": "extracted_resources",
-  "psd_file_path": "pseudonymised_resources",
-  "select": ["id", "resourceType", "birthDate", "gender"],
-  "change_id": [
+    ]
+  },
+  {
+    "psd_name": "pats",
+    "input_file_path": "extracted_resources",
+    "psd_file_path": "pseudonymised_resources",
+    "select": [
+      "id",
+      "resourceType",
+      "birthDate",
+      "gender"
+    ],
+    "change_id": [
       {
-          "id_pool": "pat_id_pseudonyms",
-          "path_to_id": "id"
+        "id_pool": "pat_id_pseudonyms",
+        "path_to_id": "id"
       }
-  ],
-  "apply_function": [
+    ],
+    "apply_function": [
       {
-          "function_to_apply": "obfuscate_date_to_year",
-          "path_to_field": "birthDate"
+        "function_to_apply": "obfuscate_date_to_year",
+        "path_to_field": "birthDate"
       }
-  ]
-},
-{
-  "psd_name": "enc",
-  "input_file_path": "extracted_resources",
-  "psd_file_path": "pseudonymised_resources",
-  "select": ["id", "resourceType", "diagnosis.use", "serviceType", "diagnosis[*].condition.reference", "subject.reference", "period"],
-  "change_id": [
+    ]
+  },
+  {
+    "psd_name": "enc",
+    "input_file_path": "extracted_resources",
+    "psd_file_path": "pseudonymised_resources",
+    "select": [
+      "id",
+      "resourceType",
+      "diagnosis.use",
+      "serviceType",
+      "diagnosis[*].condition.reference",
+      "subject.reference",
+      "period"
+    ],
+    "change_id": [
       {
-          "id_pool": "enc_id_pseudonyms",
-          "path_to_id": "id"
+        "id_pool": "enc_id_pseudonyms",
+        "path_to_id": "id"
       },
       {
-          "id_pool": "cond_id_pseudonyms",
-          "id_prefix": "Condition/",
-          "path_to_id": "diagnosis[*].condition.reference"
+        "id_pool": "cond_id_pseudonyms",
+        "id_prefix": "Condition/",
+        "path_to_id": "diagnosis[*].condition.reference"
       },
       {
-          "id_pool": "pat_id_pseudonyms",
-          "id_prefix": "Patient/",
-          "path_to_id": "subject.reference"
+        "id_pool": "pat_id_pseudonyms",
+        "id_prefix": "Patient/",
+        "path_to_id": "subject.reference"
       }
-  ],
-  "apply_function": [
+    ],
+    "apply_function": [
       {
-          "function_to_apply": "obfuscate_date_to_day",
-          "path_to_field": "period.start"
+        "function_to_apply": "obfuscate_date_to_day",
+        "path_to_field": "period.start"
       },
       {
-          "function_to_apply": "obfuscate_date_to_day",
-          "path_to_field": "period.end"
+        "function_to_apply": "obfuscate_date_to_day",
+        "path_to_field": "period.end"
       }
-  ]
-},
-{
-  "psd_name": "cond",
-  "input_file_path": "extracted_resources",
-  "psd_file_path": "pseudonymised_resources",
-  "select": ["id", "resourceType", "clinicalStatus", "verificationStatus", "code", "encounter.reference", "subject.reference"],
-  "change_id": [
+    ]
+  },
+  {
+    "psd_name": "cond",
+    "input_file_path": "extracted_resources",
+    "psd_file_path": "pseudonymised_resources",
+    "select": [
+      "id",
+      "resourceType",
+      "clinicalStatus",
+      "verificationStatus",
+      "code",
+      "encounter.reference",
+      "subject.reference"
+    ],
+    "change_id": [
       {
-          "id_pool": "cond_id_pseudonyms",
-          "path_to_id": "id"
+        "id_pool": "cond_id_pseudonyms",
+        "path_to_id": "id"
       },
       {
-          "id_pool": "pat_id_pseudonyms",
-          "id_prefix": "Patient/",
-          "path_to_id": "subject.reference"
+        "id_pool": "pat_id_pseudonyms",
+        "id_prefix": "Patient/",
+        "path_to_id": "subject.reference"
       }
-  ]
-}
+    ]
+  }
 ]
