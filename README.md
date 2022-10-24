@@ -77,13 +77,27 @@ This script pseudonymises FHIR resources according to the psd_config.json
 |psd_name| name of the pseudonymisation - used to specify the filename used to save this pseudonymised data and the filename for the file from wich the resources to be pseudonymised are loaded |||
 |input_file_path|path from which to load the resources to be pseudonymised |any path to a folder - best left as extracted_resources||
 |psd_file_path|path where pseudonymised resources are to be saved  - best left as pseudonymised_resources|||
-|select|List of jsonpaths to parts of a FHIR resource to be selected into the new pseudonymised resources e.g. "id" |||
+|select|List of paths to parts of a FHIR resource to be selected into the new pseudonymised resources e.g. "id" - path logic see below this table |||
 |change_id|List of ids to replace - contains two subfields id_pool and path_to_id both of which are required if change_id is used|||
 |id_pool| the pool of pseudonyms the pseudonym is part of - this ensures that the same Ids are replaced with the same PSD ids|||
-|path_to_id| jsonpath to the field where to replace the id|||
+|path_to_id| path to the field where to replace the id - path logic see below this table|||
 |apply_function| applies a pseudonymisation function to a field note that these have to be implemented in the pseudonymisation.py to be available here - contains two subfields function_to_apply and path_to_field both of which are required if apply_function is used|||
 |function_to_apply| specifies the function to apply to a field|||
-|path_to_field| jsonpath to the field which the function is to be applied to|||
+|path_to_field| path to the field which the function is to be applied to - path logic see below this table|||
+
+
+path logic for pseudonymisation:
+<field_name or array>.<field_name or array>.<field_name or array>
+Array can be with index [0] or [*] to apply to all entries in array, examples:
+"id",
+"resourceType",
+"diagnosis.[*].use",
+"serviceType",
+"diagnosis.[*].condition.reference",
+"subject.reference",
+"period"
+
+Note - more complex paths are currently not supported
 
 
 available pseudonymisation functions:
