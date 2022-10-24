@@ -157,9 +157,10 @@ for extraction in data_extraction_config:
             append_prefix = "?"
 
         chunk_size = extraction['cohort_dependence']['chunk_size']
-
+        
         for chunk in chunks(cohort_ids, chunk_size):
-            temp_query = f'{query}{append_prefix}{cohort_id_field}={",".join(chunk)}'
+            temp_query = f'{query}{append_prefix}{cohort_id_field}={",".join(chunk)}&_count=500'
+            print(f'Extracting chunk with query {temp_query}')
             extracted_res_list = extracted_res_list + get_all_res_for_query(temp_query, False)
 
     else:
