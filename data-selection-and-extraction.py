@@ -152,14 +152,16 @@ for extraction in data_extraction_config:
 
     if "cohort_dependence" in extraction:
         cohort_id_field = extraction['cohort_dependence']['cohort_id_selection_field']
-        append_prefix = "&"
-        if "?" not in query:
-            append_prefix = "?"
-
         chunk_size = extraction['cohort_dependence']['chunk_size']
-        
+
         for chunk in chunks(cohort_ids, chunk_size):
-            temp_query = f'{query}{append_prefix}{cohort_id_field}={",".join(chunk)}&_count=500'
+
+            if "?" not in query:
+                temp_query = f'{query}?{cohort_id_field}={",".join(chunk)}&_count=500'
+            else:
+                query_parts = query.split("?")
+                temp_query = f'{query_parts[0]}?{cohort_id_field}={",".join(chunk)}&{query_parts[1]}&_count=500'
+
             print(f'Extracting chunk with query {temp_query}')
             extracted_res_list = extracted_res_list + get_all_res_for_query(temp_query, False)
 

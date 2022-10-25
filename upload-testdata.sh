@@ -10,7 +10,7 @@ for fhirBundle in "${FILES[@]}"; do
   curl -X POST -H "Content-Type: application/json" -d @"$fhirBundle" "$FHIR_BASE_URL"
   count=$((count + 1))
   echo $count
-  if [[ "$count" -eq 100 ]]
+  if [[ "$count" -eq 1000 ]]
   then
     count=0
     sleep 5

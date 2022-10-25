@@ -137,6 +137,10 @@ def change_id_in_obj_by_expression_simple(path, id_change, resource):
         for arr_entry in resource:
             change_id_in_obj_by_expression_simple(path, id_change, arr_entry)
     else:
+
+        if cur_key not in resource:
+            return
+
         resource = resource[cur_key]
         change_id_in_obj_by_expression_simple(path, id_change, resource)
 
