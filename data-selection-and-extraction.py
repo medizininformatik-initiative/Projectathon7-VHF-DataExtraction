@@ -9,7 +9,7 @@ import json
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--fhirurl', help='base url of your local fhir server',
-                    default="http://localhost:8081/fhir")
+                    default="http://localhost:8082/fhir")
 parser.add_argument(
     '--fhiruser', help='basic auth user fhir server', nargs="?", default="")
 parser.add_argument(

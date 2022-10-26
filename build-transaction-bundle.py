@@ -7,7 +7,7 @@ from requests.auth import HTTPBasicAuth
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--fhirurl', help='base url of your local fhir server',
-                    default="http://localhost:8081/fhir")
+                    default="http://localhost:8082/fhir")
 parser.add_argument(
     '--fhiruser', help='basic auth user fhir server', nargs="?", default="")
 parser.add_argument(
@@ -60,6 +60,25 @@ bundle = {
 
 psd_names = psd_names.split(",")
 
+def get_existing_doc_ref(project_ident):
+    fhir_query = f'{fhir_base_url}/DocumentReference?identifier=http://medizininformatik-initiative.de/sid/project-identifier|{project_ident}'
+
+    if fhir_token is not None:
+        resp = requests.get(fhir_query, headers={'Authorization': f"Bearer {fhir_token}"}, proxies=proxies_fhir)
+    else:
+        resp = requests.get(fhir_query, auth=HTTPBasicAuth(fhir_user, fhir_pw), proxies=proxies_fhir)
+
+    resp_json = resp.json()
+
+    if "entry" in resp_json:
+        return resp_json["entry"][0]["resource"]["id"]
+
+    return None
+
+
+existing_doc_ref_id = get_existing_doc_ref("NT-proBNP")
+id_doc_ref = existing_doc_ref_id if existing_doc_ref_id else id_doc_ref
+
 for res_name in psd_names:
     with open(f'pseudonymised_resources/{res_name}_{psd_date_time}.json', 'r') as f:
         cur_resources = json.load(f)
@@ -87,7 +106,7 @@ send_bundle = {
     "resourceType": "Bundle",
     "type": "transaction",
     "entry": [
-        {"fullUrl": id_doc_ref,
+        {"fullUrl": f'DocumentReference/{id_doc_ref}',
          "resource": {
             "id": id_doc_ref,
             "resourceType": "DocumentReference",
@@ -107,22 +126,23 @@ send_bundle = {
              "date": "2022-09-26T12:15:23.282+00:00",
              "content": {
                 "attachment": {
-                    "contentType": "application/json",
-                    "url": id_att
+                    "contentType": "application/fhir+json",
+                    "url": f'Binary/{id_att}'
                 }
             }
          },
          "request": {
              "method": "PUT",
              "url": f'DocumentReference/{id_doc_ref}'
+             
          }
          },
         {
-            "fullUrl": id_att,
+            "fullUrl": f'Binary/{id_att}',
             "resource": {
                 "id": id_att,
                 "resourceType": "Binary",
-                "contentType": "application/json",
+                "contentType": "application/fhir+json",
                 "data": str(b64_encoded_bundle, "utf-8")
             },
             "request": {
@@ -134,10 +154,18 @@ send_bundle = {
 }
 
 if not encb64:
+
+    attachment = {
+        "contentType": "application/fhir+json",
+        "url": f'Bundle/{id_att}'
+    }
+    send_bundle["entry"][0]["resource"]["content"]["attachment"] = attachment
+
     bundle_request = {
         "method": "PUT",
         "url": f'Bundle/{id_att}'
     }
+    send_bundle["entry"][1]["fullUrl"] = f'Bundle/{id_att}'
     send_bundle["entry"][1]["resource"] = bundle
     send_bundle["entry"][1]["request"] = bundle_request
 

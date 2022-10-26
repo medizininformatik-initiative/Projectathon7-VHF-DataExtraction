@@ -14,15 +14,18 @@ This will download the VHF testdata from the MII Github and save it to the `test
 
 To spin up a FHIR server clone the following repository: https://github.com/medizininformatik-initiative/fhir-server-examples,
 navigate to the server/blaze folder, set the BASE_URL in the docker-compose file to "http://blaze:8080" and execute `docker-compose -p mii-projectathon up -d`
-This will spin up blaze FHIR server and expose it on localhost on port 8081.
-You can access your FHIR server under <http://localhost:8081/fhir/my-endpoint-here> , to see all your currently loaded Patients go to:
-<http://localhost:8081/fhir/Patient>
+This will spin up blaze FHIR server and expose it on localhost on port 8082.
+You can access your FHIR server under <http://localhost:8082/fhir/my-endpoint-here> , to see all your currently loaded Patients go to:
+<http://localhost:8082/fhir/Patient>
+
+If you are using a HAPI FHIR server the following environment variable needs to be set in the docker-compose file to allow the uploading of transaction bundles without executing them:
+HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
 
 Once the server is available (this can take a couple of seconds) and you get a response from the Patient URL above you can load your testdata.
 
 To load your testdata execute `upload-testdata.sh`, which will upload all the testdata fromt the `testdata` folder to your FHIR server.
 
-Once the script is finished access <http://localhost:8081/fhir/Patient> again to see if your resources have been loaded.
+Once the script is finished access <http://localhost:8082/fhir/Patient> again to see if your resources have been loaded.
 
 
 ### Step 3 - Create local version of config files
