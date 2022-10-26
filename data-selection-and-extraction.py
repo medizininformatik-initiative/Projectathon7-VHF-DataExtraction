@@ -149,6 +149,7 @@ for extraction in data_extraction_config:
     output_file_path = extraction['output_file_path']
     query = extraction['query']
     extracted_res_list = []
+    print(f'Extracting data for {extraction_name}...')
 
     if "cohort_dependence" in extraction:
         cohort_id_field = extraction['cohort_dependence']['cohort_id_selection_field']
@@ -162,7 +163,6 @@ for extraction in data_extraction_config:
                 query_parts = query.split("?")
                 temp_query = f'{query_parts[0]}?{cohort_id_field}={",".join(chunk)}&{query_parts[1]}&_count=500'
 
-            print(f'Extracting chunk with query {temp_query}')
             extracted_res_list = extracted_res_list + get_all_res_for_query(temp_query, False)
 
     else:

@@ -19,7 +19,9 @@ parser.add_argument(
 parser.add_argument('--httpsproxyfhir',
                     help='https proxy url for your fhir server - None if not set here', nargs="?", default=None)
 parser.add_argument(
-    '--storebundle', help='boolean whether to store the bundle in the local fhir server', nargs="?", default=False)
+    '--storebundle', help='boolean whether to store the bundle in the local fhir server', action='store_true', default=False)
+parser.add_argument(
+    '--encb64', help='boolean whether to encode the transfer bundle b64 or not', action='store_true', default=False)
 parser.add_argument(
     '--orgident', help='identifier of your organisation', nargs="?", default="my-org-ident")
 parser.add_argument(
@@ -36,6 +38,7 @@ fhir_token = args["fhirtoken"]
 http_proxy_fhir = args["httpproxyfhir"]
 https_proxy_fhir = args["httpsproxyfhir"]
 send_transaction_bundle = args["storebundle"]
+encb64 = args["encb64"]
 org_ident = args["orgident"]
 psd_date_time = args["psddatetime"]
 psd_names = args["psdnames"]
@@ -45,10 +48,14 @@ proxies_fhir = {
     "https": https_proxy_fhir
 }
 
+id_doc_ref = str(uuid.uuid4())
+id_att = str(uuid.uuid4())
+
 bundle = {
     "resourceType": "Bundle",
     "type": "transaction",
-    "entry": []
+    "entry": [],
+    "id": id_att
 }
 
 psd_names = psd_names.split(",")
@@ -75,10 +82,6 @@ datastr = json.dumps(bundle)
 b64_encoded_bundle = base64.b64encode(datastr.encode('utf-8'))
 with open(f'to_send/b64-encoded-bundle-to-send__{psd_date_time}', 'w') as f:
     f.write(str(b64_encoded_bundle, "utf-8"))
-
-
-id_doc_ref = str(uuid.uuid4())
-id_att = str(uuid.uuid4())
 
 send_bundle = {
     "resourceType": "Bundle",
@@ -130,9 +133,19 @@ send_bundle = {
     ]
 }
 
+if not encb64:
+    bundle_request = {
+        "method": "PUT",
+        "url": f'Bundle/{id_att}'
+    }
+    send_bundle["entry"][1]["resource"] = bundle
+    send_bundle["entry"][1]["request"] = bundle_request
+
 with open(f'to_send/fhir-store-bundle__{psd_date_time}.json', 'w') as f:
     json.dump(send_bundle, f)
 
+
+print(send_transaction_bundle)
 if send_transaction_bundle:
     if fhir_token is not None:
         resp = requests.post(fhir_base_url, headers={'Authorization': f"Bearer {fhir_token}"},

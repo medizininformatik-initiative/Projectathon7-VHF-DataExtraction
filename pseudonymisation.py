@@ -16,12 +16,12 @@ psd_site_ident = {
     "type": {
         "coding": [
             {
-                "system": "http://mii-randomm-site-identifier",
+                "system": "http://mii-random-site-identifier",
                 "code": "RND-MII-SITE-IDENT"
             }
         ]
     },
-    "system": "https://mii-randomm-site-identifier-ident",
+    "system": "https://mii-random-site-identifier-ident",
     "value": "RND-SITE-IDENT-NUMBER"
 }
 
@@ -341,12 +341,12 @@ def pseudonomise_resources(resource_list, psd_config):
     for resource in resource_list:
         psd_resources.append(pseudonomise_resource(resource, psd_config))
         count = count + 1
-        if count % 100 == 0:
+        if count % 1000 == 0:
             print(
                 f'N resources pseudonymised: {str(count)}/{str(n_to_pseudonymise)}')
             cur_time = time.time()
             time_taken_100 = cur_time - last_time
-            print(f'time taken for 100 res = {time_taken_100}')
+            print(f'time taken for 1000 res = {time_taken_100}')
             last_time = cur_time
 
     return psd_resources

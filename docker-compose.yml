@@ -10,7 +10,9 @@ services:
             - FHIR_TOKEN=${MII_DATA_EXTRACTION_FHIR_TOKEN}
             - SEND_REPORT=${MII_DATA_EXTRACTION_SEND_REPORT}
             - ORG_IDENT=${MII_DATA_EXTRACTION_ORG_IDENT:-my-org-ident}
-            - PSD_NAMES=${MII_DATA_EXTRACTION_PSD_NAMES:-pats,enc,obs,cond}
+            - PSD_NAMES=${MII_DATA_EXTRACTION_PSD_NAMES:-pats,cond,enc,obs}
+            - STORE_BUNDLE=${MII_DATA_EXTRACTION_STORE_BUNDLE}
+            - ENCB64=${MII_DATA_EXTRACTION_ENCB64}
         volumes:
             - ./data_extraction_config.json:/opt/data-extraction/data_extraction_config.json
             - ./psd_config.json:/opt/data-extraction/psd_config.json

@@ -3,7 +3,7 @@
 BASE_DIR="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit 1 ; pwd -P )"
 FHIR_BASE_URL=${FEASIBILITY_TESTDATA_UPLOAD_FHIR_BASE_URL:-http://localhost:8081/fhir}
 
-FILES=("$BASE_DIR"/extracted_resources/bundle-to-send.json)
+FILES=("$BASE_DIR"/to_send/fhir-store-bundle*.json)
 count=0
 for fhirBundle in "${FILES[@]}"; do
   echo "Sending Testdata bundle $fhirBundle ..."
