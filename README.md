@@ -3,7 +3,7 @@
 This repository combines data selection and extraction, pseudonymisation, bundleing of the extracted FHIR resources and Creating a Document Reference + Binary resource from the bundle
 to be send via the DSF.
 
-## Development use
+# Execute the Data Extraction Process
 
 ### Step 1 Get some testdata
 
@@ -12,8 +12,8 @@ This will download the VHF testdata from the MII Github and save it to the `test
 
 ### Step 2 - Spin up a FHIR Server and load it with data
 
-To spin up a FHIR server clone the following repository: https://github.com/medizininformatik-initiative/fhir-server-examples
-navigate to the server/blaze folder and execute `docker-compose -p mii-projectathon up -d`
+To spin up a FHIR server clone the following repository: https://github.com/medizininformatik-initiative/fhir-server-examples,
+navigate to the server/blaze folder, set the BASE_URL in the docker-compose file to "http://blaze:8080" and execute `docker-compose -p mii-projectathon up -d`
 This will spin up blaze FHIR server and expose it on localhost on port 8081.
 You can access your FHIR server under <http://localhost:8081/fhir/my-endpoint-here> , to see all your currently loaded Patients go to:
 <http://localhost:8081/fhir/Patient>
@@ -32,6 +32,7 @@ Create your own config files using the `initialise-env-files.sh`
 ### Step 4 - Configure the env files
 
 Before you can run the data extraction you will need to change the .env file according to your requirements. For all configuration options see "Configuration Options" below.
+If you are using the standard blaze server as described in Step 2 above you should set the env var: MII_DATA_EXTRACTION_FHIR_BASE_URL=http://blaze:8080/fhir
 
 Optionally you can also change the data extraction, pseudonymisation and bundeling by changing the data_extraction_config.json and psd_config.json accordingly. 
 For more information see "Running each script individually" below.
