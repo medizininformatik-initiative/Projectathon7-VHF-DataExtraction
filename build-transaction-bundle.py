@@ -144,8 +144,6 @@ if not encb64:
 with open(f'to_send/fhir-store-bundle__{psd_date_time}.json', 'w') as f:
     json.dump(send_bundle, f)
 
-
-print(send_transaction_bundle)
 if send_transaction_bundle:
     if fhir_token is not None:
         resp = requests.post(fhir_base_url, headers={'Authorization': f"Bearer {fhir_token}"},
