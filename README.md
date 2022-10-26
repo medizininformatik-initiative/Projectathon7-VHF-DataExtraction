@@ -1,13 +1,13 @@
 # MII Projecathon - Data Selection, Extraction, Pseudonymisation and Bundleing
 
-This repository combines data selection and extraction, pseudonymisation, bundleing of the extracted FHIR resources and Creating a Document Reference + Binary resource from the bundle
+This repository combines data selection and extraction, pseudonymisation, bundleing of the extracted FHIR resources and Creating a Document Reference + (Binary resource from the bundle OR the bundle itself)
 to be send via the DSF.
 
 # Execute the Data Extraction Process
 
 ### Step 1 Get some testdata
 
-To get the testdata for the projectathon execute the `get-mii-testdate.sh` of this repository.
+To get the testdata for the projectathon execute the `get-mii-testdata.sh` of this repository.
 This will download the VHF testdata from the MII Github and save it to the `testdata` folder.
 
 ### Step 2 - Spin up a FHIR Server and load it with data
@@ -20,7 +20,7 @@ You can access your FHIR server under <http://localhost:8081/fhir/my-endpoint-he
 
 Once the server is available (this can take a couple of seconds) and you get a response from the Patient URL above you can load your testdata.
 
-To load your testdata execute `upload-testdata.sh`, which will upload all the testdate fromt the `testdata` folder to your FHIR server.
+To load your testdata execute `upload-testdata.sh`, which will upload all the testdata fromt the `testdata` folder to your FHIR server.
 
 Once the script is finished access <http://localhost:8081/fhir/Patient> again to see if your resources have been loaded.
 
@@ -39,12 +39,12 @@ For more information see "Running each script individually" below.
 
 ### Step 5 - Run the data extraction, pseudonymisation and bundleing
 
-In this repository execute  `docker-compose -p mii-projectathon up`
+In this repository execute  `docker-compose -p mii-projectathon up`.
 This will run in sequence the three python scripts of this repository:
 
 1. data-selection-and-extraction.py   (selects and extracts the data according to the data_extraction_config.json) - see section data-selection-and-extraction.py below)
 2. pseudonymisation.py (pseudonymises selected resources according to the psd_config.json  - see section pseudonymisation.py below)
-3. build-transaction-bundle.py (bundles all extracted resources into one single transaction bundle, b64 encodes it and creates another Transaction bundle which contains a DocumentReference FHIR resource and a Binary FHIR resources which includes the b64 encoded bundle created before)
+3. build-transaction-bundle.py (bundles all extracted resources into one single transaction bundle, b64 encodes it and creates another Transaction bundle which contains a DocumentReference FHIR resource and  (configurable) EITHER a Binary FHIR resources which includes the b64 encoded bundle created before OR a bundle of all extracted resources)
 
 All scripts create files:
 (1.) saves all extracted reources in `extracted_resources`
