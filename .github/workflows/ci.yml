@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  release-comp-test:
+  release-proj7-extract:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
     steps:

@@ -29,7 +29,14 @@ Once the script is finished access <http://localhost:8081/fhir/Patient> again to
 
 Create your own config files using the `initialise-env-files.sh`
 
-### Step 4 - Run the data extraction, pseudonymisation and bundleing
+### Step 4 - Configure the env files
+
+Before you can run the data extraction you will need to change the .env file according to your requirements. For all configuration options see "Configuration Options" below.
+
+Optionally you can also change the data extraction, pseudonymisation and bundeling by changing the data_extraction_config.json and psd_config.json accordingly. 
+For more information see "Running each script individually" below.
+
+### Step 5 - Run the data extraction, pseudonymisation and bundleing
 
 In this repository execute  `docker-compose -p mii-projectathon up`
 This will run in sequence the three python scripts of this repository:
@@ -88,12 +95,12 @@ This script pseudonymises FHIR resources according to the psd_config.json
 
 path logic for pseudonymisation:
 <field_name or array>.<field_name or array>.<field_name or array>
-Array can be with index [0] or [*] to apply to all entries in array, examples:
+Array can be with index [0] or [\*] to apply to all entries in array, examples:
 "id",
 "resourceType",
-"diagnosis.[*].use",
+"diagnosis.[\*].use",
 "serviceType",
-"diagnosis.[*].condition.reference",
+"diagnosis.[\*].condition.reference",
 "subject.reference",
 "period"
 
@@ -107,3 +114,20 @@ obfuscate_date_to_year, obfuscate_date_to_day
 ## build-transaction-bundle.py
 
 To see the available script arguments execute `python3 build-transaction-bundle.py -h`
+<br>
+<br>
+
+# Configuration Options
+
+|env var|description|default value |
+|-|-|-|
+|MII_DATA_EXTRACTION_FHIR_BASE_URL|Local FHIR server base url e.g. see default value|http://fhir-server:8080/fhir|
+|MII_DATA_EXTRACTION_FHIR_USER|Basic auth user for local FHIR server||
+|MII_DATA_EXTRACTION_FHIR_PW|Basic auth password for local FHIR server||
+|MII_DATA_EXTRACTION_FHIR_TOKEN|auth token for local FHIR server||
+|MII_DATA_EXTRACTION_FHIR_PROXY_HTTP|HTTP url for proxy if used for local FHIR server||
+|MII_DATA_EXTRACTION_FHIR_PROXY_HTTPS|HTTPS url for proxy if used for local FHIR server||
+|MII_DATA_EXTRACTION_ORG_IDENT|DSF ident of your organization||
+|MII_DATA_EXTRACTION_PSD_NAMES|prefix names of files to be packaged to a bundle - should match psd_name names of the psd_config.json file for the pseudonymised resources to be bundle||
+|MII_DATA_EXTRACTION_STORE_BUNDLE|whether to store the bundle directly on the fhir server, activate by setting env to "--storebundle" |None|
+|MII_DATA_EXTRACTION_ENCB64|whether to encode the bundle as base64, activate by setting env to "--encb64"|None|
