@@ -142,7 +142,7 @@ send_bundle = {
             "resource": {
                 "id": id_att,
                 "resourceType": "Binary",
-                "contentType": "application/fhir+json",
+                "contentType": "text/plain",
                 "data": str(b64_encoded_bundle, "utf-8")
             },
             "request": {

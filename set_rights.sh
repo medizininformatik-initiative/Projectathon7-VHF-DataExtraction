@@ -1,0 +1,1 @@
+chown -R 10001:10001 extracted_resources pseudonymised_resources to_send certs

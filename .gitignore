@@ -10,3 +10,4 @@ specification-extraction.txt
 psd_config.json
 data_extraction_config.json
 .env
+certs/*.crt

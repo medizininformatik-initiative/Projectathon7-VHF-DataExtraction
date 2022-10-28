@@ -37,8 +37,14 @@ Create your own config files using the `initialise-env-files.sh`
 Before you can run the data extraction you will need to change the .env file according to your requirements. For all configuration options see "Configuration Options" below.
 If you are using the standard blaze server as described in Step 2 above you should set the env var: MII_DATA_EXTRACTION_FHIR_BASE_URL=http://blaze:8080/fhir
 
+If you are using a self-signed certificate for your FHIR server add the ca certificate to the "certs" folder and name it `custom-ca-bundle.crt`.
+
 Optionally you can also change the data extraction, pseudonymisation and bundeling by changing the data_extraction_config.json and psd_config.json accordingly. 
 For more information see "Running each script individually" below.
+
+### Step 5 - Set rights
+
+Execute the `set_rights.sh` to set the folder rights correctly
 
 ### Step 5 - Run the data extraction, pseudonymisation and bundleing
 
@@ -135,3 +141,7 @@ To see the available script arguments execute `python3 build-transaction-bundle.
 |MII_DATA_EXTRACTION_PSD_NAMES|prefix names of files to be packaged to a bundle - should match psd_name names of the psd_config.json file for the pseudonymised resources to be bundle||
 |MII_DATA_EXTRACTION_STORE_BUNDLE|whether to store the bundle directly on the fhir server, activate by setting env to "--storebundle" |None|
 |MII_DATA_EXTRACTION_ENCB64|whether to encode the bundle as base64, activate by setting env to "--encb64"|None|
+
+## Self-Signed Certificates
+
+If you are using a self-signed certificate for your FHIR server add the ca certificate to the "certs" folder and name it `custom-ca-bundle.crt`.
