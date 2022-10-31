@@ -46,7 +46,7 @@ For more information see "Running each script individually" below.
 
 Execute the `set_rights.sh` to set the folder rights correctly
 
-### Step 5 - Run the data extraction, pseudonymisation and bundleing
+### Step 6 - Run the data extraction, pseudonymisation and bundleing
 
 In this repository execute  `docker-compose -p mii-projectathon up`.
 This will run in sequence the three python scripts of this repository:
