@@ -126,7 +126,7 @@ send_bundle = {
              "date": "2022-09-26T12:15:23.282+00:00",
              "content": {
                 "attachment": {
-                    "contentType": "application/fhir+json",
+                    "contentType": "text/plain",
                     "url": f'Binary/{id_att}'
                 }
             }

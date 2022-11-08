@@ -1,0 +1,1 @@
+Folder to store the split bundles at the datamanagement hub when splitting recieved bundles into parts for re-insertion into a FHIR server.
