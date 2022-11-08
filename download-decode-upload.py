@@ -138,7 +138,9 @@ def get_list_of_bundles(project_ident):
 
     for entry in resp_json["entry"]:
         new_bundle_url = entry["resource"]["content"][0]["attachment"]['url']
-        bundle_list.append(new_bundle_url)
+
+        if entry["resource"]["content"][0]["attachment"]["contentType"] == "text/plain":
+            bundle_list.append(new_bundle_url)
 
     return bundle_list
 
