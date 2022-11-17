@@ -1,0 +1,16 @@
+services:
+    mii-data-extraction:
+        image: ghcr.io/juliangruendner/pj7-data-download-upload-dm:0.5.0
+        environment:
+            - FHIR_BASE_URL=${MII_DATA_EXTRACTION_FHIR_BASE_URL}
+            - FHIR_USER=${MII_DATA_EXTRACTION_FHIR_USER}
+            - FHIR_PW=${MII_DATA_EXTRACTION_FHIR_PW}
+            - FHIR_PROXY_HTTP=${MII_DATA_EXTRACTION_FHIR_PROXY_HTTP}
+            - FHIR_PROXY_HTTPS=${MII_DATA_EXTRACTION_FHIR_PROXY_HTTPS}
+            - FHIR_TOKEN=${MII_DATA_EXTRACTION_FHIR_TOKEN}
+            - PROJ_IDENT=${MII_DATA_EXTRACTION_PROJ_IDENT}
+            - SEND_TO_FHIR=${MII_DATA_EXTRACTION_SEND_TO_FHIR}
+            - N_PATS_BUNDLE=${MII_DATA_EXTRACTION_N_PATS_BUNDLE:-1000}
+        volumes:
+            - ./split_insert_bundles:/opt/data-extraction/split_insert_bundles
+            - ../certs:/opt/data-extraction/certs

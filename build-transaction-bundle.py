@@ -28,6 +28,8 @@ parser.add_argument(
     '--psddatetime', help='time of pseudonmised resources to use format: 2022-09-26_10-03-40', nargs="?", default="2022-09-26_10-03-40")
 parser.add_argument(
     '--psdnames', help='comma separated list of extraction names - see psd_name of psd_config.json', nargs="?", default="pats,enc,obs,cond")
+parser.add_argument(
+    '--projectident', help='project identifier', nargs="?", default="NT-proBNP")
 
 args = vars(parser.parse_args())
 
@@ -42,6 +44,7 @@ encb64 = args["encb64"]
 org_ident = args["orgident"]
 psd_date_time = args["psddatetime"]
 psd_names = args["psdnames"]
+project_ident = args["projectident"]
 
 proxies_fhir = {
     "http": http_proxy_fhir,
@@ -76,7 +79,7 @@ def get_existing_doc_ref(project_ident):
     return None
 
 
-existing_doc_ref_id = get_existing_doc_ref("NT-proBNP")
+existing_doc_ref_id = get_existing_doc_ref(project_ident)
 id_doc_ref = existing_doc_ref_id if existing_doc_ref_id else id_doc_ref
 
 for res_name in psd_names:
@@ -112,7 +115,7 @@ send_bundle = {
             "resourceType": "DocumentReference",
             "masterIdentifier": {
                 "system": "http://medizininformatik-initiative.de/sid/project-identifier",
-                "value": "NT-proBNP"
+                "value": project_ident
             },
              "status": "current",
              "docStatus": "final",

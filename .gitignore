@@ -11,4 +11,4 @@ psd_config.json
 data_extraction_config.json
 .env
 certs/*.crt
-/split_insert_bundles/*.json
+/dm/split_insert_bundles/*.json

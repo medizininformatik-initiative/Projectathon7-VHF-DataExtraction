@@ -21,6 +21,8 @@ parser.add_argument(
     '--sendtofhir', help='boolean whether to store the bundle in the local fhir server', action='store_true', default=False)
 parser.add_argument(
     '--npatsbundle', help='token auth fhir server', nargs="?", type=int, default=1000)
+parser.add_argument(
+    '--projectident', help='project identifier', nargs="?", default="NT-proBNP")
 
 args = vars(parser.parse_args())
 
@@ -32,6 +34,7 @@ http_proxy_fhir = args["httpproxyfhir"]
 https_proxy_fhir = args["httpsproxyfhir"]
 send_to_fhir = args["sendtofhir"]
 n_pats_bundle = args["npatsbundle"]
+project_ident = args["projectident"]
 
 proxies_fhir = {
     "http": http_proxy_fhir,
@@ -146,7 +149,7 @@ def get_list_of_bundles(project_ident):
 
 
 bucket_size = n_pats_bundle
-bundle_list = get_list_of_bundles("NT-proBNP")
+bundle_list = get_list_of_bundles(project_ident)
 
 for index in range(0, len(bundle_list)):
     bundle_url = bundle_list[index]
