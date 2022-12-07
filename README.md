@@ -7,8 +7,7 @@ to be send via the DSF.
 
 ### Step 1 Get some testdata
 
-To get the testdata for the projectathon execute the `get-mii-testdata.sh` of this repository.
-This will download the VHF testdata from the MII Github and save it to the `testdata` folder.
+Testdata is automatically provided as part of this repository in the testdata folder.
 
 ### Step 2 - Spin up a FHIR Server and load it with data
 
@@ -34,8 +33,11 @@ Create your own config files using the `initialise-env-files.sh`
 
 ### Step 4 - Configure the env files
 
-Before you can run the data extraction you will need to change the .env file according to your requirements. For all configuration options see "Configuration Options" below.
+Before you can run the data extraction you will need to change the .env file according to your requirements. 
+For all configuration options see "Configuration Options" below.
+
 If you are using the standard blaze server as described in Step 2 above you should set the env var: MII_DATA_EXTRACTION_FHIR_BASE_URL=http://blaze:8080/fhir
+
 
 If you are using a self-signed certificate for your FHIR server add the ca certificate to the "certs" folder and name it `custom-ca-bundle.crt`.
 
@@ -137,6 +139,7 @@ To see the available script arguments execute `python3 build-transaction-bundle.
 |MII_DATA_EXTRACTION_FHIR_TOKEN|auth token for local FHIR server||
 |MII_DATA_EXTRACTION_FHIR_PROXY_HTTP|HTTP url for proxy if used for local FHIR server||
 |MII_DATA_EXTRACTION_FHIR_PROXY_HTTPS|HTTPS url for proxy if used for local FHIR server||
+|MII_DATA_EXTRACTION_PROJ_IDENT|Ident of the project you are executing these scripts for||
 |MII_DATA_EXTRACTION_ORG_IDENT|DSF ident of your organization||
 |MII_DATA_EXTRACTION_PSD_NAMES|prefix names of files to be packaged to a bundle - should match psd_name names of the psd_config.json file for the pseudonymised resources to be bundle||
 |MII_DATA_EXTRACTION_STORE_BUNDLE|whether to store the bundle directly on the fhir server, activate by setting env to "--storebundle" |None|
