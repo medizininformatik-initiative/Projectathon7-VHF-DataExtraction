@@ -72,8 +72,8 @@ def get_existing_doc_ref(project_ident):
         resp = requests.get(fhir_query, auth=HTTPBasicAuth(fhir_user, fhir_pw), proxies=proxies_fhir)
 
     resp_json = resp.json()
-
-    if "entry" in resp_json:
+    
+    if "entry" in resp_json and len(resp_json["entry"]) > 0:
         return resp_json["entry"][0]["resource"]["id"]
 
     return None
