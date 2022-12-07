@@ -1,5 +1,3 @@
-testdata/*.json
-/testdata/*.zip
 /extracted_resources/*.json
 /extracted_resources/b64*
 /pseudonymised_resources/*.json
