@@ -1,6 +1,6 @@
 services:
     mii-data-extraction:
-        image: ghcr.io/juliangruendner/pj7-data-extraction:0.6.0
+        image: ghcr.io/juliangruendner/pj7-data-extraction:0.6.2
         environment:
             - FHIR_BASE_URL=${MII_DATA_EXTRACTION_FHIR_BASE_URL}
             - FHIR_USER=${MII_DATA_EXTRACTION_FHIR_USER}
