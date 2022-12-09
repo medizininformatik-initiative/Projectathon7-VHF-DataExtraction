@@ -135,7 +135,7 @@ def change_id_in_obj_by_expression_simple(path, id_change, resource):
 
     if cur_key == "*":
         for arr_entry in resource:
-            change_id_in_obj_by_expression_simple(path, id_change, arr_entry)
+            change_id_in_obj_by_expression_simple(path.copy(), id_change, arr_entry)
     else:
 
         if cur_key not in resource:
@@ -197,7 +197,7 @@ def apply_function_to_field_by_expression_simple(path, to_apply, resource):
         if cur_key not in resource:
             return
         resource = resource[cur_key]
-        apply_function_to_field_by_expression_simple(path, to_apply, resource)
+        apply_function_to_field_by_expression_simple(path.copy(), to_apply, resource)
 
 
 def key_is_array_index(key):
@@ -278,7 +278,8 @@ def select_in_obj_by_expression_simple(path, psd_resource, resource):
                 psd_resource.append(new_arr_entry)
             else:
                 new_arr_entry = psd_resource[index]
-            select_in_obj_by_expression_simple(path, new_arr_entry, arr_entry)
+            
+            select_in_obj_by_expression_simple(path.copy(), new_arr_entry, arr_entry)
         return
 
     next_key = path[0]
