@@ -111,20 +111,23 @@ def change_id_in_obj_by_expression_simple(path, id_change, resource):
 
     if len(path) <= 1:
         cur_key = path.pop(0)
-        cur_id = resource[cur_key]
-        if id_prefix is not None:
-            cur_id = cur_id.replace(id_prefix, "")
+        try:
+            cur_id = resource[cur_key]
+            if id_prefix is not None:
+                cur_id = cur_id.replace(id_prefix, "")
 
-        if cur_id not in id_pool:
-            psd_id = str(uuid.uuid4())
-            id_pool[cur_id] = psd_id
-        else:
-            psd_id = id_pool[cur_id]
+            if cur_id not in id_pool:
+                psd_id = str(uuid.uuid4())
+                id_pool[cur_id] = psd_id
+            else:
+                psd_id = id_pool[cur_id]
 
-        if id_prefix is not None:
-            resource[cur_key] = f'{id_prefix}{psd_id}'
-        else:
-            resource[cur_key] = psd_id
+            if id_prefix is not None:
+                resource[cur_key] = f'{id_prefix}{psd_id}'
+            else:
+                resource[cur_key] = psd_id
+        except KeyError as e:
+            print(f'{cur_key} not found in resource: {resource}')
 
         return
 
