@@ -36,8 +36,8 @@ jobs:
         context: .
         platforms: linux/amd64,linux/arm64
         tags: |
-          ghcr.io/juliangruendner/pj7-data-extraction:latest
-          ghcr.io/juliangruendner/pj7-data-extraction:${{ steps.prep.outputs.version }}
+          ghcr.io/medizininformatik-initiative/pj7-data-extraction:latest
+          ghcr.io/medizininformatik-initiative/pj7-data-extraction:${{ steps.prep.outputs.version }}
         push: true
     - name: Build and push Docker image dm
       uses: docker/build-push-action@v2
@@ -45,6 +45,6 @@ jobs:
         context: ./dm
         platforms: linux/amd64,linux/arm64
         tags: |
-          ghcr.io/juliangruendner/pj7-data-download-upload-dm:latest
-          ghcr.io/juliangruendner/pj7-data-download-upload-dm:${{ steps.prep.outputs.version }}
+          ghcr.io/medizininformatik-initiative/pj7-data-download-upload-dm:latest
+          ghcr.io/medizininformatik-initiative/pj7-data-download-upload-dm:${{ steps.prep.outputs.version }}
         push: true
