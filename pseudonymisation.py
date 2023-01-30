@@ -111,6 +111,10 @@ def change_id_in_obj_by_expression_simple(path, id_change, resource):
 
     if len(path) <= 1:
         cur_key = path.pop(0)
+
+        if cur_key not in resource:
+            return
+
         cur_id = resource[cur_key]
         if id_prefix is not None:
             cur_id = cur_id.replace(id_prefix, "")
@@ -125,7 +129,7 @@ def change_id_in_obj_by_expression_simple(path, id_change, resource):
             resource[cur_key] = f'{id_prefix}{psd_id}'
         else:
             resource[cur_key] = psd_id
-
+        
         return
 
     cur_key = path.pop(0)

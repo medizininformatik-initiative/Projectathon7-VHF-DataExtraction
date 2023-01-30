@@ -133,7 +133,8 @@ def extract_ids_from_resources(resource_list, extraction_path, id_prefix):
 
     return id_list
 
-def chunks(lst, n):
+def chunks(input_set, n):
+    lst = list(input_set)
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
@@ -142,7 +143,7 @@ with open("data_extraction_config.json", "r") as f:
     data_extraction_config = json.load(f)
 
 extracted_resources = {}
-cohort_ids = []
+cohort_ids = set()
 
 for extraction in data_extraction_config:
     extraction_name = extraction['name']
@@ -175,7 +176,7 @@ for extraction in data_extraction_config:
         cohort_id_field = extraction['cohort_extraction']['cohort_id_field']
         cohort_id_prefix = extraction['cohort_extraction']['cohort_id_prefix']
         part_cohort_ids = extract_ids_from_resources(extracted_res_list, cohort_id_field, cohort_id_prefix)
-        cohort_ids = cohort_ids + part_cohort_ids
+        cohort_ids.update(part_cohort_ids)
 
     with open(f'{output_file_path}/{extraction_name}.json', 'w') as f:
         json.dump(extracted_resources[extraction_name], f)

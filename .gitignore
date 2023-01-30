@@ -10,3 +10,5 @@ data_extraction_config.json
 .env
 certs/*.crt
 /dm/split_insert_bundles/*.json
+/for-alex
+/testdata-input
