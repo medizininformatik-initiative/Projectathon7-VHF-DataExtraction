@@ -118,6 +118,11 @@
         "id_pool": "pat_id_pseudonyms",
         "id_prefix": "Patient/",
         "path_to_id": "subject.reference"
+      },
+      {
+        "id_pool": "enc_id_pseudonyms",
+        "id_prefix": "Encounter/",
+        "path_to_id": "encounter.reference"
       }
     ]
   }

@@ -1,7 +1,7 @@
 [
   {
     "name": "obs",
-    "query": "/Observation?code=http://loinc.org%7C33763-4,http://loinc.org%7C71425-3,http://loinc.org%7C33762-6,http://loinc.org%7C83107-3,http://loinc.org%7C83108-1,http://loinc.org%7C77622-9,http://loinc.org%7C77621-1&date=ge2019-01-01&date=le2021-12-31&_format=json",
+    "query": "/Observation?code=http://loinc.org%7C33763-4,http://loinc.org%7C71425-3,http://loinc.org%7C33762-6,http://loinc.org%7C83107-3,http://loinc.org%7C83108-1,http://loinc.org%7C77622-9,http://loinc.org%7C77621-1&date=ge2019-01-01&date=le2022-12-31&_format=json",
     "output_file_path": "extracted_resources",
     "request_type": "GET",
     "cohort_extraction": {
