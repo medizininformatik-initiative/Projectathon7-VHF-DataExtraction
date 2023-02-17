@@ -21,8 +21,8 @@ python3 pseudonymisation.py --psddatetime "$PSD_DATE_TIME"
 echo "Finished pseudonymising data"
 
 echo "Begin creation of extraction transfer bundle..."
-python3 build-transaction-bundle.py --fhirurl "$FHIR_BASE_URL" --fhiruser "$FHIR_USER" \
---fhirpw "$FHIR_PW" --fhirtoken $FHIR_TOKEN --httpproxyfhir "$FHIR_PROXY_HTTP" --httpsproxyfhir "$FHIR_PROXY_HTTPS" \
+python3 build-transaction-bundle.py --fhirurl "$SHARE_FHIR_BASE_URL" --fhiruser "$SHARE_FHIR_USER" \
+--fhirpw "$SHARE_FHIR_PW" --fhirtoken $SHARE_FHIR_TOKEN --httpproxyfhir "$SHARE_FHIR_PROXY_HTTP" --httpsproxyfhir "$SHARE_FHIR_PROXY_HTTPS" \
 --orgident "$ORG_IDENT" --psddatetime "$PSD_DATE_TIME" --psdnames "$PSD_NAMES" $STORE_BUNDLE $ENCB64 --projectident "$PROJ_IDENT"
 echo "Finished creation of extraction transfer bundle..."
 

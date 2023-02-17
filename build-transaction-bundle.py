@@ -176,6 +176,7 @@ with open(f'to_send/fhir-store-bundle__{psd_date_time}.json', 'w') as f:
     json.dump(send_bundle, f)
 
 if send_transaction_bundle:
+    print(f"Storing bundle to send on fhir server {fhir_base_url}")
     if fhir_token is not None:
         resp = requests.post(fhir_base_url, headers={'Authorization': f"Bearer {fhir_token}"},
                              json=send_bundle, proxies=proxies_fhir)

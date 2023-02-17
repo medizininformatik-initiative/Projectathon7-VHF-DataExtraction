@@ -139,6 +139,12 @@ To see the available script arguments execute `python3 build-transaction-bundle.
 |MII_DATA_EXTRACTION_FHIR_TOKEN|auth token for local FHIR server||
 |MII_DATA_EXTRACTION_FHIR_PROXY_HTTP|HTTP url for proxy if used for local FHIR server||
 |MII_DATA_EXTRACTION_FHIR_PROXY_HTTPS|HTTPS url for proxy if used for local FHIR server||
+|MII_DATA_EXTRACTION_SHARE_FHIR_BASE_URL|Local share FHIR server base url where the transfer bundle will be uploaded and which the DSF connects to e.g. see default value|http://fhir-server:8080/fhir|
+|MII_DATA_EXTRACTION_SHARE_FHIR_USER|Basic auth user for share FHIR server||
+|MII_DATA_EXTRACTION_SHARE_FHIR_PW|Basic auth password for share FHIR server||
+|MII_DATA_EXTRACTION_SHARE_FHIR_TOKEN|auth token for share FHIR server||
+|MII_DATA_EXTRACTION_SHARE_FHIR_PROXY_HTTP|HTTP url for proxy if used for share FHIR server||
+|MII_DATA_EXTRACTION_SHARE_FHIR_PROXY_HTTPS|HTTPS url for proxy if used for share FHIR server||
 |MII_DATA_EXTRACTION_PROJ_IDENT|Ident of the project you are executing these scripts for||
 |MII_DATA_EXTRACTION_ORG_IDENT|DSF ident of your organization||
 |MII_DATA_EXTRACTION_PSD_NAMES|prefix names of files to be packaged to a bundle - should match psd_name names of the psd_config.json file for the pseudonymised resources to be bundle||

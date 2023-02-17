@@ -1,6 +1,6 @@
 services:
     mii-data-extraction:
-        image: ghcr.io/medizininformatik-initiative/pj7-data-extraction:0.7.1
+        image: ghcr.io/medizininformatik-initiative/pj7-data-extraction:0.7.2
         environment:
             - FHIR_BASE_URL=${MII_DATA_EXTRACTION_FHIR_BASE_URL}
             - FHIR_USER=${MII_DATA_EXTRACTION_FHIR_USER}
@@ -8,6 +8,12 @@ services:
             - FHIR_PROXY_HTTP=${MII_DATA_EXTRACTION_FHIR_PROXY_HTTP}
             - FHIR_PROXY_HTTPS=${MII_DATA_EXTRACTION_FHIR_PROXY_HTTPS}
             - FHIR_TOKEN=${MII_DATA_EXTRACTION_FHIR_TOKEN}
+            - SHARE_FHIR_BASE_URL=${MII_DATA_EXTRACTION_SHARE_FHIR_BASE_URL}
+            - SHARE_FHIR_USER=${MII_DATA_EXTRACTION_SHARE_FHIR_USER}
+            - SHARE_FHIR_PW=${MII_DATA_EXTRACTION_SHARE_FHIR_PW}
+            - SHARE_FHIR_PROXY_HTTP=${MII_DATA_EXTRACTION_SHARE_FHIR_PROXY_HTTP}
+            - SHARE_FHIR_PROXY_HTTPS=${MII_DATA_EXTRACTION_SHARE_FHIR_PROXY_HTTPS}
+            - SHARE_FHIR_TOKEN=${MII_DATA_EXTRACTION_SHARE_FHIR_TOKEN}
             - SEND_REPORT=${MII_DATA_EXTRACTION_SEND_REPORT}
             - PROJ_IDENT=${MII_DATA_EXTRACTION_PROJ_IDENT}
             - ORG_IDENT=${MII_DATA_EXTRACTION_ORG_IDENT:-my-org-ident}
