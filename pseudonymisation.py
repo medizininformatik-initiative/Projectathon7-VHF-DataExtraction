@@ -176,8 +176,6 @@ def apply_function_to_field_by_expression(to_apply, resource):
 
 def apply_function_to_field_by_expression_simple(path, to_apply, resource):
 
-    path = to_apply['path_to_field'].split(".")
-
     if len(path) <= 1:
         cur_key = path.pop(0)
 
