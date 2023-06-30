@@ -107,14 +107,18 @@ This script pseudonymises FHIR resources according to the psd_config.json
 
 path logic for pseudonymisation:
 <field_name or array>.<field_name or array>.<field_name or array>
-Array can be with index [0] or [\*] to apply to all entries in array, examples:
+Array can be with index [0] or [*] to apply to all entries in array, examples:
 "id",
 "resourceType",
-"diagnosis.[\*].use",
+"diagnosis.[*].use",
 "serviceType",
-"diagnosis.[\*].condition.reference",
+"diagnosis.[*].condition.reference",
 "subject.reference",
 "period"
+
+Further it is possible to select array entries based on attribute values (currentl only string values are supported) of the array entry objects, according to this logic
+[@<attributeName>='<stringValueOfAttribute'], example:
+"code.coding.[@system='http://fhir.de/CodeSystem/bfarm/icd-10-gm']"
 
 Note - more complex paths are currently not supported
 

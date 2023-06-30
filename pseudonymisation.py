@@ -250,6 +250,15 @@ def select_in_obj_by_expression(selection, psd_resource, resource):
             resource = resource[cur_key]
 
 
+def is_searched_for_array_entry(arr_entry, cur_key):
+    array_check_attr_key = re.search('@(.*)=', cur_key).group(1)
+    array_check_attr_val = re.search('=\'(.*)\'', cur_key).group(1)
+    if arr_entry[array_check_attr_key] == array_check_attr_val:
+        return True
+  
+    return False
+    
+
 def select_in_obj_by_expression_simple(path, psd_resource, resource):
 
     if not path:
@@ -261,20 +270,30 @@ def select_in_obj_by_expression_simple(path, psd_resource, resource):
     if cur_is_array_key:
         cur_key = re.sub(r"[\[\]]", "", cur_key)
 
-        if cur_key != "*":
+        if cur_key != "*" and "@" not in cur_key:
             cur_key = int(cur_key)
 
     if not path:
-        if cur_is_array_key:
+        if "@" in cur_key:
+            for arr_entry in resource:
+                if is_searched_for_array_entry(arr_entry, cur_key):
+                    psd_resource.append(arr_entry)
+                
+        elif cur_is_array_key:
             psd_resource.append(resource[cur_key])
         elif cur_key in resource:
             psd_resource[cur_key] = resource[cur_key]
         return
 
-    if cur_key == "*":
+    if cur_key == "*" or "@" in cur_key:
         psd_res_arr_is_new = True if len(psd_resource) == 0 else False
         for index in range(0, len(resource)):
             arr_entry = resource[index]
+
+            if "@" in cur_key:
+                if not is_searched_for_array_entry(arr_entry, cur_key):
+                    continue
+
             if psd_res_arr_is_new:
                 new_arr_entry = {}
                 psd_resource.append(new_arr_entry)
@@ -308,13 +327,34 @@ def add_psd_site_ident(psd_resource):
     psd_resource['identifier'].append(psd_site_ident)
 
 
+def get_input_path(input_path):
+    paths = []
+    input_path = f'.{input_path}'
+    res = re.split('\[|\]', input_path)
+    for path in res:
+        if  "\'" in path: 
+            paths.append(f'[{path}]')
+        elif not "." in path and path != "":
+            paths.append(f'[{path}]')
+        else:
+          
+          sub_paths = path.split(".")
+
+          for sub_path in sub_paths:
+              if sub_path != "":
+                  paths.append(sub_path)
+      
+    return paths
+
+
 def pseudonomise_resource(resource, psd_config):
 
     psd_resource = {}
 
     for selection in psd_config['select']:
+        
         select_in_obj_by_expression_simple(
-            selection.split("."), psd_resource, resource)
+            get_input_path(selection), psd_resource, resource)
 
     for id_change in psd_config['change_id']:
         change_id_in_obj_by_expression_simple(
