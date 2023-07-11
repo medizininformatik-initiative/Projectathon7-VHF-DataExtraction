@@ -356,9 +356,10 @@ def pseudonomise_resource(resource, psd_config):
         select_in_obj_by_expression_simple(
             get_input_path(selection), psd_resource, resource)
 
-    for id_change in psd_config['change_id']:
-        change_id_in_obj_by_expression_simple(
-            id_change['path_to_id'].split("."), id_change, psd_resource)
+    if 'change_id' in psd_config:
+        for id_change in psd_config['change_id']:
+            change_id_in_obj_by_expression_simple(
+                id_change['path_to_id'].split("."), id_change, psd_resource)
 
     if 'remove' in psd_config:
         for to_remove in psd_config['remove']:
@@ -369,7 +370,7 @@ def pseudonomise_resource(resource, psd_config):
             apply_function_to_field_by_expression_simple(
                 to_apply['path_to_field'].split("."), to_apply, psd_resource)
 
-    add_psd_site_ident(psd_resource)
+    #add_psd_site_ident(psd_resource)
 
     return psd_resource
 

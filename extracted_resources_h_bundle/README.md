@@ -1,0 +1,1 @@
+Folder to store the extracted resources when re-extracting from bundle of FHIR resources bundled accross types

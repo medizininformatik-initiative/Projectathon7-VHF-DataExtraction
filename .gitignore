@@ -1,4 +1,5 @@
 /extracted_resources/*.json
+/extracted_resources_h_bundle/*.json
 /extracted_resources/b64*
 /pseudonymised_resources/*.json
 /to_send/b64*
@@ -12,3 +13,4 @@ certs/*.crt
 /dm/split_insert_bundles/*.json
 /for-alex
 /testdata-input
+psd_config_test.json
