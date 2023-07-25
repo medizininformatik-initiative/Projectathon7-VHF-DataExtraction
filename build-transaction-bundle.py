@@ -79,7 +79,8 @@ def get_existing_doc_ref(project_ident):
     return None
 
 
-existing_doc_ref_id = get_existing_doc_ref(project_ident)
+#existing_doc_ref_id = get_existing_doc_ref(project_ident)
+existing_doc_ref_id = None
 id_doc_ref = existing_doc_ref_id if existing_doc_ref_id else id_doc_ref
 
 for res_name in psd_names:
