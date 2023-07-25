@@ -26,6 +26,10 @@ for entry in input_resources['entry']:
     cur_res = entry['resource']
     cur_type = cur_res['resourceType']
 
+    if cur_res['id'] in id_pseudonyms[cur_type]:
+        print(f'Duplicate main Id {cur_res["id"]} of resource  - Error in data => exiting')
+        exit()
+
     id_pseudonyms[cur_type][cur_res['id']] = True
 
 for entry in input_resources['entry']:
@@ -33,7 +37,6 @@ for entry in input_resources['entry']:
     cur_type = cur_res['resourceType']
 
     if "Observation" == cur_type:
-        test = 1
 
         if cur_res["subject"]["reference"].replace("Patient/", "") not in id_pseudonyms["Patient"]:
             print(

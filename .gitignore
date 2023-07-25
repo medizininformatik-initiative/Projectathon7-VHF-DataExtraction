@@ -11,6 +11,7 @@ data_extraction_config.json
 .env
 certs/*.crt
 /dm/split_insert_bundles/*.json
+/dm/test-fhir-server/testdata/*.json
 /for-alex
 /testdata-input
 psd_config_test.json
